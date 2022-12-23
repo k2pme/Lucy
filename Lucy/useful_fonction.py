@@ -247,43 +247,5 @@ def config() -> str :
     print("Done !")
         
     return netcard
-
-
-
-def callback(packet) :
-    
-    """Callback fcuntion for sniff method in twala"""
-    
-    if packet.haslayer(Dot11Beacon) :                   # check if the packet has a Dot11 layer
-        # Extract necessary data
-        bssid = packet[Dot11].addr2
-        ssid = packet[Dot11Elt].info.decode()
-        
-        try :
-            dbm_signal = packet.dBm_AntiSignal
-        except :
-            dbm_signal = "N/A"
-            
-        stats = packet[Dot11Beacon].network_stats()
-        channel = stats.get("channel")
-        
-        crypto = stats.get("crypto")
-        network.loc[bssid] = (ssid, dbm_signal, channel, crypto)
         
         
-        
-def print_all(network) -> None :
-    """Write frame"""
-    while True :
-        os.system("clear")
-        print(network)
-        time.sleep(1)
-        
-        
-        
-        
-def pandas_config() -> pd.DataFrame :
-    """Create a frame for displaying access points"""
-    network = pd.DataFrame(columns=["BSSID", "SSID", "dBm_signal", "Channel", "Crypto"])
-    network.set_index("BSSID", inplace=True)
-    return network
